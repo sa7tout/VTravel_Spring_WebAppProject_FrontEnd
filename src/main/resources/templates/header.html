@@ -1,0 +1,184 @@
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="author" content="Untree.co">
+    <link rel="shortcut icon" href="/favicon.png">
+
+    <meta name="description" content="" />
+    <meta name="keywords" content="bootstrap, bootstrap4" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Source+Serif+Pro:wght@400;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="/css/owl.theme.default.min.css">
+    <link rel="stylesheet" href="/css/jquery.fancybox.min.css">
+    <link rel="stylesheet" href="/fonts/icomoon/style.css">
+    <link rel="stylesheet" href="/fonts/flaticon/font/flaticon.css">
+    <link rel="stylesheet" href="/css/daterangepicker.css">
+    <link rel="stylesheet" href="/css/aos.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+    <style>
+
+        .logo-image {
+     /* Adjust the size of the logo image */
+     width: 250px; /* Adjust the width as needed */
+     height: 50px; /* Maintain aspect ratio */
+   }
+
+   .site-navigation {
+
+     padding-left: 20px;
+     padding-right: 20px;
+
+   }
+
+    </style>
+
+    <title>VTRAVEL</title>
+</head>
+
+<html>
+
+
+<div class="site-mobile-menu site-navbar-target">
+    <div class="site-mobile-menu-header">
+        <div class="site-mobile-menu-close">
+            <span class="icofont-close js-menu-toggle"></span>
+        </div>
+    </div>
+    <div class="site-mobile-menu-body"></div>
+</div>
+
+<nav class="site-nav">
+    <div class="container">
+        <div class="site-navigation">
+            <a href="/index.html" class="logo m-0">
+                <img src="/images/vtravellogo1.png" alt="VTRAVEL Logo" class="logo-image">
+                <span class="text-primary">.</span>
+            </a>
+
+            <ul class="js-clone-nav d-none d-lg-inline-block text-left site-menu float-right">
+                <li th:classappend="${activePage == 'index'} ? 'active'"><a href="/index.html">Home</a></li>
+                <li th:classappend="${activePage == 'services'} ? 'active'"><a href="/services.html">Services</a></li>
+                <li th:classappend="${activePage == 'about'} ? 'active'"><a href="/about.html">About</a></li>
+                <li th:classappend="${activePage == 'contact'} ? 'active'"><a href="/contact.html">Contact Us</a></li>
+                <li>
+                        <div th:include="profileModal.html"></div>
+
+                </li>
+            </ul>
+            <div class="overlay" id="loginOverlay" th:fragment="loginOverlay">
+                <div class="login-modal" id="loginModalContent" th:include="loginModal.html"></div>
+            </div>
+            <a href="#" class="burger ml-auto float-right site-menu-toggle js-menu-toggle d-inline-block d-lg-none light" data-toggle="collapse" data-target="#main-navbar">
+                <span></span>
+            </a>
+
+        </div>
+    </div>
+</nav>
+
+<script>
+    $(document).ready(function () {
+    const dropdownUser = document.getElementById('dropdownUser');
+
+    // Function to fetch user information and display it in the profile dropdown
+    function fetchAndDisplayUserInfo() {
+        // Make an AJAX call to fetch user information
+        $.ajax({
+            url: 'http://localhost:8080/api/customers/user', // Endpoint to fetch user information
+            type: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + (localStorage.getItem('sessionToken') || sessionStorage.getItem('sessionToken'))
+            },
+            success: function (response) {
+
+                // Call the endpoint to store user details in session attributes
+                storeUserInSession(response);
+            },
+            error: function (xhr, status, error) {
+                console.error('Error fetching user information:', error);
+            }
+        });
+    }
+
+    // Function to store user details in session attributes
+    function storeUserInSession(userDetails) {
+        $.ajax({
+            url: '/api/user', // Endpoint to store user details in session
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(userDetails),
+            success: function (response) {
+                console.log(response);
+            },
+            error: function (xhr, status, error) {
+                console.error('Error storing user details in session:', error);
+            }
+        });
+    }
+
+    // Function to check if the user is signed in
+    function isUserSignedIn() {
+        return localStorage.getItem('sessionToken') || sessionStorage.getItem('sessionToken');
+    }
+
+    // Function to validate if the session is still active
+    function validateSession() {
+    console.log('localStorage session token:', localStorage.getItem('sessionToken'));
+    console.log('sessionStorage session token:', sessionStorage.getItem('sessionToken'));
+        $.ajax({
+            url: 'http://localhost:8080/api/customers/validate-session',
+            type: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + (localStorage.getItem('sessionToken') || sessionStorage.getItem('sessionToken'))
+            },
+            beforeSend: function (xhr, settings) {
+                console.log('Request headers:', settings.headers);
+            },
+            success: function (response) {
+                // Session is valid, proceed with fetching user info
+                fetchAndDisplayUserInfo();
+            },
+            error: function (xhr, status, error) {
+                console.error('Session validation failed:', error);
+                // Session is invalid, clear token and prompt user to sign in again
+                localStorage.removeItem('sessionToken');
+                sessionStorage.removeItem('sessionToken');
+                // Display sign-in modal or redirect to sign-in page
+                $('#loginOverlay').show();
+            }
+        });
+    }
+
+    dropdownUser.addEventListener('click', function () {
+        // Check if the user is already signed in
+        if (!isUserSignedIn()) {
+            $('#loginOverlay').toggle(); // Show login modal
+        } else {
+            dropdownUser.setAttribute('data-toggle', 'dropdown');
+            validateSession(); // Validate session and fetch user info
+        }
+    });
+
+    // Close login modal when clicking outside of it
+    $(document).mouseup(function (e) {
+        var container = $(".login-modal");
+        if (!container.is(e.target) && container.has(e.target).length === 0) {
+            $('#loginOverlay').hide();
+        }
+    });
+});
+
+
+</script>
+
+
+</html>

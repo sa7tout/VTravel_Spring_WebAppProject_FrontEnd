@@ -1,0 +1,285 @@
+<div class="login-wrap">
+    <div class="login-html">
+        <input id="tab-1" type="radio" name="tab" class="sign-in" checked><label for="tab-1" class="tab">Sign In</label>
+        <input id="tab-2" type="radio" name="tab" class="sign-up"><label for="tab-2" class="tab">Sign Up</label>
+        <div class="login-form">
+            <div class="sign-in-htm">
+                <div class="group">
+                    <label for="signInEmail" class="label">Email</label>
+                    <input id="signInEmail" type="email" class="input" required autocomplete="email">
+                    <div id="signInEmailError" class="error-message"></div>
+                </div>
+                <div class="group">
+                    <label for="signInPass" class="label">Password</label>
+                    <input id="signInPass" type="password" class="input" data-type="password" minlength="8" required>
+                    <div id="signInPassError" class="error-message"></div>
+                </div>
+                <div class="group">
+                    <input id="signInCheck" type="checkbox" class="check" checked>
+                    <label for="signInCheck"><span class="icon"></span> Keep me Signed in</label>
+                </div>
+                <div class="group">
+                    <input type="submit" class="button" value="Sign In" onclick="validateSignIn()">
+                </div>
+                <div class="hr"></div>
+                <div class="foot-lnk">
+                    <a href="#forgot">Forgot Password?</a>
+                </div>
+            </div>
+            <div class="sign-up-htm">
+                <div class="group">
+                    <label for="signUpFirstName" class="label">First Name</label>
+                    <input id="signUpFirstName" type="text" class="input" required>
+                    <div id="signUpFirstNameError" class="error-message"></div>
+                </div>
+                <div class="group">
+                    <label for="signUpLastName" class="label">Last Name</label>
+                    <input id="signUpLastName" type="text" class="input" required>
+                    <div id="signUpLastNameError" class="error-message"></div>
+                </div>
+                <div class="group">
+                    <label for="signUpEmail" class="label">Email Address</label>
+                    <input id="signUpEmail" type="email" class="input" required>
+                    <div id="signUpEmailError" class="error-message"></div>
+                </div>
+                <div class="group">
+                    <label for="signUpPass" class="label">Password</label>
+                    <input id="signUpPass" type="password" class="input" data-type="password" minlength="8" required>
+                    <div id="signUpPassError" class="error-message"></div>
+                </div>
+                <div class="group">
+                    <label for="signUpPassRepeat" class="label">Repeat Password</label>
+                    <input id="signUpPassRepeat" type="password" class="input" data-type="password" minlength="8" required>
+                    <div id="signUpPassRepeatError" class="error-message"></div>
+                </div>
+                <div class="group">
+                    <input type="submit" class="button" value="Sign Up" onclick="validateSignUp()">
+                </div>
+                <div class="hr"></div>
+                <div class="foot-lnk">
+                    <a for="tab-1">Already Member?</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="successModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <p>Sign-in successful!</p>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+<script>
+    function validateSignUp() {
+    var firstName = document.getElementById("signUpFirstName").value;
+    var lastName = document.getElementById("signUpLastName").value;
+    var email = document.getElementById("signUpEmail").value;
+    var password = document.getElementById("signUpPass").value;
+    var repeatPassword = document.getElementById("signUpPassRepeat").value;
+
+    var firstNameError = document.getElementById("signUpFirstNameError");
+    var lastNameError = document.getElementById("signUpLastNameError");
+    var emailError = document.getElementById("signUpEmailError");
+    var passwordError = document.getElementById("signUpPassError");
+    var repeatPasswordError = document.getElementById("signUpPassRepeatError");
+
+    // Clear previous error messages
+    firstNameError.innerHTML = "";
+    lastNameError.innerHTML = "";
+    emailError.innerHTML = "";
+    passwordError.innerHTML = "";
+    repeatPasswordError.innerHTML = "";
+
+    var isValid = true;
+
+    if (firstName.trim() === "") {
+        firstNameError.innerHTML = "First name is required.";
+        isValid = false;
+    }
+
+    if (lastName.trim() === "") {
+        lastNameError.innerHTML = "Last name is required.";
+        isValid = false;
+    }
+
+    if (password.length < 8) {
+        passwordError.innerHTML = "Password must be at least 8 characters long.";
+        isValid = false;
+    }
+
+    if (password !== repeatPassword) {
+        repeatPasswordError.innerHTML = "Passwords do not match.";
+        isValid = false;
+    }
+
+    // Simple email validation
+    var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        emailError.innerHTML = "Invalid email address.";
+        isValid = false;
+    }
+
+    if (isValid) {
+    console.log("entered");
+        fetch('http://localhost:8080/api/customers/signup', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                firstName: firstName,
+                lastName: lastName,
+                email: email,
+                password: password
+            }),
+        })
+        .then(response => {
+            if (response.ok) {
+                return response.text(); // Extract the response text
+            } else {
+                throw new Error('Failed to sign up. Please try again.');
+            }
+        })
+        .then(data => {
+            // Show success message
+            Swal.fire({
+                icon: 'success',
+                title: data, // Use the response message
+                showConfirmButton: false,
+                timer: 1500
+            }).then(() => {
+                // Clear input fields
+                document.getElementById("signUpFirstName").value = "";
+                document.getElementById("signUpLastName").value = "";
+                document.getElementById("signUpEmail").value = "";
+                document.getElementById("signUpPass").value = "";
+                document.getElementById("signUpPassRepeat").value = "";
+                // Close the overlay
+                var overlay = document.getElementById("loginOverlay");
+                overlay.style.display = "none";
+            });
+        })
+        .catch(error => {
+            // Log the error to the browser console for debugging
+            console.error('An error occurred:', error);
+
+            // Show a generic error message to the user
+            Swal.fire({
+                icon: 'error',
+                title: 'An error occurred. Please try again later.',
+                showConfirmButton: false,
+                timer: 1500
+            });
+        });
+    }
+}
+
+
+     function handleServerError(errorMsg) {
+    // Log the error message to the console
+    console.error('Server error:', errorMsg);
+
+    // Show error message using SweetAlert
+    Swal.fire({
+        icon: 'error',
+        title: 'An unexpected error occurred. Please try again later.',
+        showConfirmButton: false,
+        timer: 1500
+    });
+}
+
+// Function to handle login
+async function login(email, password, keepSignedIn) {
+    try {
+        const response = await fetch('http://localhost:8080/api/customers/signin', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                email: email,
+                password: password
+            }),
+        });
+        const data = await response.json();
+        if (response.ok) {
+            // Store session token securely (e.g., in cookies or local storage)
+            if (keepSignedIn) {
+                localStorage.setItem('sessionToken', data.sessionToken); // Store session token in local storage
+            } else {
+                sessionStorage.setItem('sessionToken', data.sessionToken); // Store session token in session storage
+            }
+            console.log('Login successful!');
+            // Show success message using SweetAlert
+            Swal.fire({
+                icon: 'success',
+                title: 'Login successful!',
+                timer: 1500,
+                showConfirmButton: false
+            }).then(() => {
+                var overlay = document.getElementById("loginOverlay");
+                overlay.style.display = "none"; // Close the overlay
+            });
+        } else {
+            // Show error message using SweetAlert
+            Swal.fire({
+                icon: 'error',
+                title: 'Login failed',
+                text: 'Invalid email or password. Please try again.',
+                timer: 1500,
+                showConfirmButton: false
+            });
+            console.error('Login failed:', data.error);
+        }
+    } catch (error) {
+        console.error('An error occurred during login:', error);
+        // Handle unexpected server response
+        handleServerError('An unexpected error occurred. Please try again later.');
+    }
+}
+
+// Function to validate sign-in
+function validateSignIn() {
+    var email = document.getElementById("signInEmail").value;
+    var password = document.getElementById("signInPass").value;
+    var keepSignedIn = document.getElementById("signInCheck").checked;
+
+    var emailError = document.getElementById("signInEmailError");
+    var passwordError = document.getElementById("signInPassError");
+
+    // Clear previous error messages
+    emailError.innerHTML = "";
+    passwordError.innerHTML = "";
+
+    var isValid = true;
+
+    // Email validation
+    var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email)) {
+        emailError.innerHTML = "Invalid email format.";
+        isValid = false;
+    }
+
+    if (password.length < 8) {
+        passwordError.innerHTML = "Password must be at least 8 characters long.";
+        isValid = false;
+    }
+
+    if (isValid) {
+        // Call login function with email, password, and keepSignedIn flag
+        login(email, password, keepSignedIn);
+    }
+}
+
+// Function to handle logout
+function logout() {
+    localStorage.removeItem('sessionToken'); // Clear session token from local storage
+    sessionStorage.removeItem('sessionToken'); // Clear session token from session storage
+    const dropdownUser = document.getElementById('dropdownUser');
+    dropdownUser.removeAttribute('data-toggle');
+}
+
+</script>

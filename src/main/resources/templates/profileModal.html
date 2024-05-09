@@ -1,0 +1,59 @@
+<div class="user-icon" xmlns:th="http://www.w3.org/1999/xhtml">
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-12">
+            <ul class="list-unstyled">
+                <li class="dropdown ml-2">
+
+                    <a class="icon-user " role="button" id="dropdownUser"
+                        aria-haspopup="true" aria-expanded="false">
+                    </a>
+
+                    <div id="userDropdown" class="dropdown-menu pb-2" aria-labelledby="dropdownUser">
+                       <!-- <div class="dropdown-item">
+                            <div class="d-flex py-2">
+                                <div class="ml-1 lh-1">
+                                    <div th:text="${session.userDetails != null ? session.userDetails.firstName + ' ' + session.userDetails.lastName : ''}"></div>
+                                </div>
+
+                            </div>
+
+                        </div>-->
+                        <div class="dropdown-divider"></div>
+                        <div class="">
+                            <ul class="list-unstyled">
+                                <li>
+                                    <a class="dropdown-item" href="#">
+                                        <span class="mr-1">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                                        </span>Profile
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#">
+                                        <span class="mr-1">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-settings"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                                        </span>Settings
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <ul class="list-unstyled">
+                            <li>
+                                <a class="dropdown-item" href="index.html" onclick="logout()">
+                                    <span class="mr-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-power"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path><line x1="12" y1="2" x2="12" y2="12"></line></svg>
+                                    </span>Sign Out
+                                </a>
+                            </li>
+
+                        </ul>
+
+                    </div>
+                </li>
+            </ul>
+
+        </div>
+
+    </div>
+</div>
