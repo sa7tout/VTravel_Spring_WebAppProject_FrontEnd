@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Travel Card</title>
+    <link rel="stylesheet" href="/css/travelcardstyle.css">
+</head>
+<body>
+<div class="wrapper" th:fragment="card(voyage,search)">
+    <div class="image" th:style="'background-image: url(' + ${voyage.destinationImage} + ')'"></div>
+    <div class="details">
+        <h3><em th:text="${voyage.destinationName}"></em></h3>
+        <h2 th:text="'Departure Date: ' + ${#dates.format(voyage.departureDate, 'dd/MM/yyyy')}"></h2>
+        <h2 th:text="'Return Date: ' + ${#dates.format(voyage.returnDate, 'dd/MM/yyyy')}"></h2>
+        <p th:text="'Price: $' + ${voyage.price}"></p>
+        <form action="/travels/booking" method="post" id="bookForm">
+            <!-- Hidden input to store the voyage ID -->
+            <input type="hidden" name="voyageId" th:value="${voyage.voyageId}">
+
+            <!-- Hidden inputs to store the last search parameters -->
+            <input type="hidden" name="destination" th:value="${search.get(0)}">
+            <input type="hidden" name="dateRange" th:value="${search.get(1)}">
+            <input type="hidden" name="numPeople" th:value="${search.get(2)}">
+
+            <!-- Hidden input to store the session token -->
+            <input type="hidden" name="sessionToken" id="sessionToken" th:value="${sessionToken}">
+
+            <!-- Submit button -->
+            <button class="btn btn-primary btn-block" style="width: 50%; margin: auto;" type="button" onclick="bookVoyage()">Book Now</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>
