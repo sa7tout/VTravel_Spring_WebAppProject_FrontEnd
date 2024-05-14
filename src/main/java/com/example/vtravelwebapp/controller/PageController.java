@@ -44,9 +44,6 @@ public class PageController {
         try {
             List<Travel> voyages = (List<Travel>) session.getAttribute("searchvoyages");
             session.removeAttribute("searchvoyages");
-            String sessionToken = (String) session.getAttribute("sessionToken");
-            // Add the session token to the model
-            model.addAttribute("sessionToken", sessionToken);
             model.addAttribute("session", session);
             SearchParameters lastsearch = (SearchParameters) session.getAttribute("latestSearchParameters");
             List<String> search = lastsearch.toStringList();

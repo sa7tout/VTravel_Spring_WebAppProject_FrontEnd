@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<div th:include="header.html"></div>
+
+<div class="hero hero-inner" style="background-color: #51829B;">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mx-auto text-center">
+                <div class="intro-wrap">
+                    <h1 class="mb-0">Booking Confirmation</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="alert alert-danger" role="alert"> <!-- Changed to alert-danger for failure -->
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-exclamation-circle mr-3"></i> <!-- Changed to exclamation icon for failure -->
+                    <div>
+                        <h4 class="alert-heading">Booking Failed!</h4> <!-- Changed heading for failure -->
+                        <p>We're sorry, but there was an error processing your booking. Please try again later.</p> <!-- Changed message for failure -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:include="footer.html"></div>
+
+</body>
+
+</html>
